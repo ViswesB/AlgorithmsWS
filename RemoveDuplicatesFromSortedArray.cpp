@@ -56,24 +56,34 @@ using namespace std;
 
 class Solution {
 public:
-    int removeDuplicates(vector<int>& nums) {
+    int removeDuplicatesWithMap(vector<int>& nums) {
         map<int,int> orMap;
         
         for(int i=0; i < nums.size(); i++)
         {
-            if(nums[i] == -1) {
-                swap(nums[i],nums[i+1]);
-                continue;
-            }
             auto retMap = orMap.insert(pair<int,int>(nums[i],i));
             
             if(!retMap.second) { 
                 nums[i] = -1;
             }
-            swap(nums[i],nums[i+1]);
-            cout << i << " " << " " << nums[i] << " " << nums[i+1] << endl;
         }
         return orMap.size();
+    }
+
+    int removeDuplicates(vector<int>& arr)
+    {
+        int n = arr.size();
+        if (n==0 || n==1){  
+            return n;  
+        }    
+        int j = 0;//for next element  
+        for (int i=0; i < n-1; i++){  
+            if (arr[i] != arr[i+1]){  
+                arr[j++] = arr[i];  
+            }  
+        }  
+        arr[j++] = arr[n-1];  
+        return j;  
     }
 
     void swap(int i, int j)
@@ -91,8 +101,7 @@ int main()
 {
     Solution sol;
     int NumberOfElem = 0;
-    //vector<int> nums = {0,0,1,1,1,2,2,2,2,3,3,3,3,3,3,4,4,5,5,5,5,5,5,5,5};
-    vector<int> nums = {0,0,1,1};
+    vector<int> nums = {0,0,1,1,1,2,2,2,2,3,3,3,3,3,3,4,4,5,5,5,5,5,5,5,5};
     NumberOfElem = sol.removeDuplicates(nums);
     cout << "Number Of Elements after Duplicates Removed: " << NumberOfElem << endl;
     for(int i = 0; i< nums.size() ; i++)
