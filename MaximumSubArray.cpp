@@ -29,7 +29,7 @@ Constraints:
     -105 <= nums[i] <= 105
 */
 
-// Divide And Conquer 
+// Divide And Conquer  and Kadane
 #include <vector>
 #include <iostream>
 #include <algorithm> //max
@@ -37,21 +37,31 @@ using namespace std;
 
 class Solution {
 public:
-    int maxSubArrayKadane(vector<int>& nums) {
-        int totalSum = 0;
-        int cnsSum = 0;
+    int maxSubArray(vector<int>& nums) {
+        int maxTotalSum = INT_MIN;
+        int maxCurrentSum = 0;
+        int maxNegativeSum = INT_MIN; //to consider all negative array
         int i=0;
         if(nums.size() == 1)
-            return totalSum = nums[0];
+            return maxTotalSum = nums[0];
+
         for(i=0;i<nums.size();i++)
         {
-            cnsSum = cnsSum + nums[i];
-            if(cnsSum < 0)
-                cnsSum = 0;
-            if(totalSum <= cnsSum)
-                totalSum = cnsSum;
+            maxCurrentSum = maxCurrentSum + nums[i];
+            if(maxCurrentSum < 0) 
+                maxCurrentSum = 0;
+            if(maxCurrentSum > maxTotalSum)
+                maxTotalSum = maxCurrentSum;
+            
+            if(nums[i] >= maxNegativeSum) {
+                maxNegativeSum = nums[i];
+            }
         }
-        return totalSum;
+
+        //Incase if input array is all negative numbers
+        if(maxTotalSum == 0)
+            maxTotalSum = maxNegativeSum;
+        return maxTotalSum;
     }
 
     int maxSumFromLeftArray(vector<int>& nums,int startIndex, int endIndex,int& maxSumAtIndex)
@@ -103,7 +113,7 @@ public:
         return maxSumFromRightArray(nums,startIndex,endIndex,maxSumAtIndex);
     }
 
-    int maxSubArray(vector<int>& nums)
+    int maxSubArrayDivideAndConquer(vector<int>& nums)
     {
         int firstElem = 0;
         int lastElem = nums.size()-1;
@@ -142,9 +152,9 @@ int main()
     //vector<int> arr = {-2,-1};
     //vector<int> arr = {5,4,-1,7,8};
     //vector<int> arr = {8,-19,5,-4,20};
-    vector<int> arr = {-1,-2,-3,0};
+    //vector<int> arr = {-1,-2,-3,0};
     //vector<int> arr = {5};
-    //vector<int> arr = {1,2};
+    vector<int> arr = {1,2};
     auto maxSum = sol.maxSubArray(arr);
     cout << "max Sum is : " << maxSum << endl;
     return 0;
