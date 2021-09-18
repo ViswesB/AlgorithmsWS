@@ -48,8 +48,6 @@ public:
             if(i==prices.size()-1)
                 break;
 
-            // if(prices[i] < minValueBuy)
-            //     minValueBuy = prices[i];
             minValueBuy = min(prices[i],minValueBuy);
 
             //Check if next day price is bringing profits
