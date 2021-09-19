@@ -46,7 +46,7 @@ using namespace std;
 
 class Solution {
 public:
-    int missingNumber(vector<int>& nums) {
+    int missingNumberSorted(vector<int>& nums) {
         int mNum = nums.size();
         sort(nums.begin(),nums.end());
         if(nums[0] != 0)
@@ -59,15 +59,28 @@ public:
         }
         return mNum;
     }
+
+    int missingNumber(vector<int>& nums) {
+        int xorAll = 0;
+        int xorArr = 0;
+        for(int i=0;i<nums.size();i++)
+        {
+            xorArr ^= nums[i];
+            xorAll ^= i+1;
+            if(nums.size() == i)
+                xorAll ^= i+1;
+        }
+        return xorArr ^ xorAll;
+    }
 };
 
 int main()
 {
-    //vector<int> nums = {9,6,4,2,3,5,7,0,1};
-    //vector<int> nums = {0,1};
-    //vector<int> nums = {0,2,3};
-    //vector<int> nums = {8,7,6,5,4,3,2,1};
-    vector<int> nums = {2,1};
+    // vector<int> nums = {9,6,4,2,3,5,7,0,1};
+    // vector<int> nums = {0,1};
+    // vector<int> nums = {0,2,3};
+    vector<int> nums = {8,7,6,5,4,3,2,1};
+    // vector<int> nums = {2,1};
     
     Solution sol;
     cout << "Missing Number:" << sol.missingNumber(nums) << endl;
