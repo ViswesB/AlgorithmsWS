@@ -473,6 +473,208 @@ public:
         }
         return head;
     }
+
+    Node* reverseList(Node* head) {
+        if(!head)
+            return head;
+        
+        Node* curr = head;
+        Node* prev = nullptr;
+        Node* next = nullptr;
+        Node* tempNode = nullptr;
+
+        while(curr) {
+            next = curr->next;
+            if(!prev) {
+                prev = curr;
+                prev->next = nullptr;
+            }
+            else {
+                tempNode = prev;
+                prev = curr;
+                prev->next = tempNode;
+            }
+            curr = next;
+        }
+
+        head = prev;
+        return head;
+    }
+
+    bool isPalindrome(Node* head) {
+        bool isLLPalindrome = false;
+        if(!head)
+            return isLLPalindrome;
+
+        if(!head->next)
+            return isLLPalindrome;
+
+        // Idea is to use "Floyd's Cycle detection" to use slow and fast pointers
+        // when fast reaches null or fast->next reaches null then slow pointer should be at middle node
+        Node* slow = head;
+        Node* fast = head;
+
+        while(slow && fast) {
+            slow = slow->next;
+            // Moving fast by 2 elements
+            fast = fast->next;
+            if(fast && fast->next)
+                fast = fast->next;
+            else
+                break;
+        }
+        
+        //slow should be pointing to middle element
+        //fast or fast->next should be pointing to null 
+
+        // Reverse list from slow to end of List
+        Node* prev = nullptr;
+        Node* next = nullptr;
+        while(slow) {
+            next = slow->next;
+            slow->next = prev; 
+            prev = slow;
+            slow = next;
+        }
+        slow = prev;
+        PrintSLL(slow);
+
+        // // re-direct fast to head
+        fast = head;
+        while(slow && fast) {
+            if(slow->val == fast->val) {
+                isLLPalindrome = true;
+                slow = slow->next;
+                fast = fast->next;
+            }
+            else {
+                isLLPalindrome = false;
+                break;
+            }
+        }
+
+        return isLLPalindrome;
+    }
+
+    // Delete a node without head or prev pointers
+    void deleteNode(Node* node) {
+        if(!node)
+            return;
+        
+        // only one element remains i.e. tail
+        if(!node->next) {
+            return;
+        }
+
+        // Idea is to use next element i.e. 
+        // keep address of deleted node and 
+        // copy value of next element in deleted node
+        // change deleted node -> next to next of next
+
+        Node* next = node->next;
+        node->val = next->val;
+        node->next = next->next;
+        delete next;
+    }
+
+    Node* middleNode(Node* head) {
+        if(!head)
+            return head;
+
+        if(!head->next)
+            return head;
+
+        //slow and fast pointers "Floyds Cyclic Detection"
+        // by the time fast pointer or fast->next reaches null
+        // slow would be at middle node
+        Node* slow = head;
+        Node* fast = head;
+        while(slow && fast) {
+            if(fast->next)
+                fast = fast->next;
+            else
+                break;
+            
+            slow = slow->next;
+
+            if(fast && fast->next)
+                fast = fast->next;
+            else
+                break;
+            
+        }
+        return slow;
+    }
+
+    /*
+    1290. Convert Binary Number in a Linked List to Integer
+
+    Given head which is a reference node to a singly-linked list. The value of each node in the linked list is either 0 or 1. The linked list holds the binary representation of a number.
+
+    Return the decimal value of the number in the linked list.
+
+    
+
+    Example 1:
+
+    Input: head = [1,0,1]
+    Output: 5
+    Explanation: (101) in base 2 = (5) in base 10
+
+    Example 2:
+
+    Input: head = [0]
+    Output: 0
+
+    Example 3:
+
+    Input: head = [1]
+    Output: 1
+
+    Example 4:
+
+    Input: head = [1,0,0,1,0,0,1,1,1,0,0,0,0,0,0]
+    Output: 18880
+
+    Example 5:
+
+    Input: head = [0,0]
+    Output: 0
+*/
+    int getDecimalValue(Node* head) {
+        if(!head) 
+            return 0;   
+        
+        if(!head->next)
+            return head->val;
+
+        int sum = 0;
+        int leftShiftCounter = 0;
+        Node* curr = head;
+        Node* prev = nullptr;
+        Node* next = nullptr;
+
+        // Idea is to reverse linked list
+        // then left shift head->val by leftShiftCounter
+        // and add to sum
+        while(curr) {
+            //reverse linkedlist
+            next = curr->next;
+            curr->next = prev; //de-linked
+            prev = curr;
+            curr = next;
+        }
+        PrintSLL(prev);
+
+        while(prev) {
+            auto nodeValue = prev->val << leftShiftCounter;
+            sum += nodeValue;
+            leftShiftCounter++;
+            prev = prev->next;
+        }
+
+        return sum;
+    }
 };
 
 int main()
@@ -625,5 +827,103 @@ int main()
     cout << "----- REMOVING ELEMENTS ----- : " << valToDelete << endl;
     auto afterDelLL = sLinkedList.removeElements(newLL,valToDelete);
     sLinkedList.PrintSLL(afterDelLL);
+
+
+    // Print linked list in reverse
+    cout << "----------- Printing Linked list in REVERSE ----------------" << endl;
+    Node* reverseList = nullptr;
+    reverseList = sLinkedList.append(reverseList,1);
+    reverseList = sLinkedList.append(reverseList,2);
+    reverseList = sLinkedList.append(reverseList,3);
+    reverseList = sLinkedList.append(reverseList,4);
+    reverseList = sLinkedList.append(reverseList,5);
+    reverseList = sLinkedList.append(reverseList,6);
+    reverseList = sLinkedList.append(reverseList,7);
+    reverseList = sLinkedList.append(reverseList,8);
+    sLinkedList.PrintSLL(reverseList);
+    sLinkedList.PrintSLL(sLinkedList.reverseList(reverseList));
+
+    // Palindrome or not
+    cout << "----------- Printing Linked list for Palindrome ----------------" << endl;
+    Node* palindromeList = nullptr;
+    //100
+    palindromeList = sLinkedList.append(palindromeList,1);
+    palindromeList = sLinkedList.append(palindromeList,0);
+    palindromeList = sLinkedList.append(palindromeList,0);
+    //906609
+    // palindromeList = sLinkedList.append(palindromeList,9);
+    // palindromeList = sLinkedList.append(palindromeList,0);
+    // palindromeList = sLinkedList.append(palindromeList,6);
+    // palindromeList = sLinkedList.append(palindromeList,6);
+    // palindromeList = sLinkedList.append(palindromeList,0);
+    // palindromeList = sLinkedList.append(palindromeList,9);
+    
+    sLinkedList.PrintSLL(palindromeList);
+    cout << boolalpha << "is this Palindrome??: " << sLinkedList.isPalindrome(palindromeList) << endl;
+
+    // delete a node with head or prev element of linkedlist
+    cout << "----------- Printing Linked list for Deletion of node without head ----------------" << endl;
+    //1->2->3->4->5->6->7->null
+    Node* nodeList = nullptr;
+    Node* newnode = new Node(1);
+    nodeList = newnode;
+    newnode = new Node(2);
+    nodeList->next = newnode;
+    newnode = new Node(3);
+    nodeList->next->next = newnode;
+    newnode = new Node(4);
+    nodeList->next->next->next = newnode;
+    newnode = new Node(5);
+    nodeList->next->next->next->next = newnode;
+    Node* deletedNode = newnode;
+    newnode = new Node(6);
+    nodeList->next->next->next->next->next = newnode;
+    newnode = new Node(7);
+    nodeList->next->next->next->next->next->next = newnode;
+
+    nodeList->next->next->next->next->next->next->next = nullptr;
+
+    sLinkedList.PrintSLL(nodeList);
+    sLinkedList.deleteNode(deletedNode);
+    cout << "----------- Printing Linked list After Deletion of node without head ----------------" << endl;
+    sLinkedList.PrintSLL(nodeList);
+
+
+    cout << "For Middle Node of Linked List" << endl;
+    Node* ll = nullptr;
+    // ll = sLinkedList.append(ll,1);
+    // ll = sLinkedList.append(ll,2);
+    // ll = sLinkedList.append(ll,3);
+    // ll = sLinkedList.append(ll,4);
+    // ll = sLinkedList.append(ll,5);
+    // ll = sLinkedList.append(ll,6);
+    sLinkedList.PrintSLL(ll);
+    auto middleNode = sLinkedList.middleNode(ll);
+    if(middleNode)
+        cout << "middleNode is: " << middleNode->val << endl;
+
+    cout << "For decimal value from Linked list of binary digits " << endl;
+    Node* binaryLL = nullptr;
+    // [1,0,0,1,0,0,1,1,1,0,0,0,0,0,0]
+    binaryLL = sLinkedList.append(binaryLL,1);
+    binaryLL = sLinkedList.append(binaryLL,0);
+    binaryLL = sLinkedList.append(binaryLL,0);
+    binaryLL = sLinkedList.append(binaryLL,1);
+    binaryLL = sLinkedList.append(binaryLL,0);
+    binaryLL = sLinkedList.append(binaryLL,0);
+    binaryLL = sLinkedList.append(binaryLL,1);
+    binaryLL = sLinkedList.append(binaryLL,1);
+    binaryLL = sLinkedList.append(binaryLL,1);
+    binaryLL = sLinkedList.append(binaryLL,0);
+    binaryLL = sLinkedList.append(binaryLL,0);
+    binaryLL = sLinkedList.append(binaryLL,0);
+    binaryLL = sLinkedList.append(binaryLL,0);
+    binaryLL = sLinkedList.append(binaryLL,0);
+    binaryLL = sLinkedList.append(binaryLL,0);
+    
+
+    sLinkedList.PrintSLL(binaryLL);
+    cout << "Decimal value from Binary Linked List:" << sLinkedList.getDecimalValue(binaryLL) << endl;
+
     return 0;
 }
