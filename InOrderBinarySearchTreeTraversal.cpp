@@ -1,11 +1,6 @@
 /*
 Inorder Tree Traversal
 */
-
-/*
-Pre-Order Binary Tree to Vector 
-*/
-
 #include <iostream>
 #include <stack>
 #include <vector>
