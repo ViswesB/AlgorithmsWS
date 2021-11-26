@@ -54,11 +54,9 @@ public:
     int recBinarySearch(vector<int>& nums,int lowerB, int upperB,int target) {
        if(lowerB > upperB)
            return lowerB;
-       else if(lowerB == upperB) {
-           if(target > nums[lowerB])
-              return lowerB+1;
-           else
-              return lowerB;
+       else if((lowerB == upperB) && (upperB == nums.size()-1)) {
+           if(target > upperB)
+            return upperB+1;
        } 
         
        int midB = lowerB + (upperB - lowerB)/2;
