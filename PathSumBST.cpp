@@ -34,8 +34,8 @@ Constraints:
 
 */
 
-#include <bits/stdc++.h>
-#include <stack>
+#include <iostream>
+#include <memory>
 using namespace std;
 
 struct TreeNode {
@@ -48,21 +48,46 @@ struct TreeNode {
 };
 
 class Solution {
+    bool recPathSum(TreeNode* root, int sum, int targetSum) {
+        //once reached leaf then check for sum and targetSum   
+        if(!root->left && !root->right) {
+            return (sum + root->val == targetSum) ? true : false;
+        }
+
+        sum += root->val;
+                           
+        bool leftB = false;
+        bool rightB = false;
+        
+        if(root->left)
+            leftB = recPathSum(root->left,sum,targetSum);
+        if(root->right)
+            rightB = recPathSum(root->right,sum,targetSum);
+        
+        return leftB || rightB;
+    }
 public:
     bool hasPathSum(TreeNode* root, int targetSum) {
         if(!root)
-            return false;
-        
-        if(root && !root->left && !root->right) {
-            if(root->val == targetSum)
-                return true;
-            else
-                return false;
-        }
-        
-        TreeNode* curr = root;
-        
-        
-        return false;
+            return 0;
+        return recPathSum(root,0,targetSum);
     }
 };
+
+int main() {
+    TreeNode* root = new TreeNode(5);
+    root->left = new TreeNode(4);
+    root->right = new TreeNode(8);
+    root->right->left = new TreeNode(13);
+    root->right->right = new TreeNode(4);
+    root->right->right->right = new TreeNode(1);
+    root->left->left = new TreeNode(11);
+    root->left->left->left = new TreeNode(7);
+    root->left->left->right = new TreeNode(2);
+
+    int targetSum = 22;
+
+    unique_ptr<Solution> sol = make_unique<Solution>();
+    cout << boolalpha << sol->hasPathSum(root,targetSum) << endl;
+    return 0;
+}
